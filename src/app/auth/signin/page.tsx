@@ -8,8 +8,10 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState<string>("youremail@example.com");
-  const [password, setPassword] = useState<string>("Password123");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  // const [email, setEmail] = useState<string>("youremail@example.com");
+  // const [password, setPassword] = useState<string>("Password123");
 
   const { login, authState } = useAuth();
   const router = useRouter();

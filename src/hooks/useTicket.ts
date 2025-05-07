@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
 import { Ticket, UseTicketsResponse } from "@/types/ticket-type";
+import { AxiosError } from "axios";
 
 const useTickets = (): UseTicketsResponse & {
   createTicket: (
@@ -16,8 +17,11 @@ const useTickets = (): UseTicketsResponse & {
       try {
         const response = await axiosInstance.get<Ticket[]>("/api/v1/tickets");
         setTickets(response.data);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch tickets");
+      } catch (err: unknown) {
+        const axiosError = err as AxiosError<{ message?: string }>;
+        setError(
+          axiosError.response?.data?.message || "Failed to fetch tickets"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -37,8 +41,9 @@ const useTickets = (): UseTicketsResponse & {
         ticket
       );
       setTickets((prev) => [...prev, response.data]);
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to create ticket");
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message?: string }>;
+      setError(axiosError.response?.data?.message || "Failed to create ticket");
     }
   };
 

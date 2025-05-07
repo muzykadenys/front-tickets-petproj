@@ -2,6 +2,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 import axiosInstance from "@/lib/axios";
 import { AuthState, RegisterPayload, User } from "@/types/auth-type";
+import { AxiosError } from "axios";
 
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -38,10 +39,12 @@ export const useAuth = () => {
     try {
       const response = await axiosInstance.post("/api/v1/auth/register", data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+
       setAuthState((prev) => ({
         ...prev,
-        error: error.response?.data?.message || "Registration failed",
+        error: axiosError.response?.data?.message || "Registration failed",
       }));
     }
   };
